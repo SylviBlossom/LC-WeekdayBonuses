@@ -1,9 +1,12 @@
 {
-    "name": "TemplateMod",
+    "name": "WeekdayBonuses",
     "version_number": "1.0.0",
-    "website_url": "",
-    "description": "A mod for Lethal Company",
+    "website_url": "https://github.com/SylviBlossom/LC-WeekdayBonuses",
+    "description": "Adds repeating bonus events for certain days of the week.",
     "dependencies": [
-        "BepInEx-BepInExPack-5.4.2100"
+        "BepInEx-BepInExPack-5.4.2100",
+        "Evaisa-HookGenPatcher-0.0.5",
+        "xilophor-LethalNetworkAPI-2.1.7",
+        "Sigurd-CSync-5.0.1"
     ]
 }
