@@ -3,7 +3,11 @@
 public enum EventType
 {
 	None,
+	DoubleMonster,
+	DoubleTrap,
 	DoubleLoot,
 	SmallFacility,
-	Easter
+	Black,
+	Easter,
+	Nightmare
 }
