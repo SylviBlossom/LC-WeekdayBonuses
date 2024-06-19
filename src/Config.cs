@@ -95,9 +95,9 @@ public class Config : SyncedConfig2<Config>
 		DoubleMonsterOutdoorPowerMultiplier.SettingChanged += OnDoubleMonsterVariableSettingChanged;
 
 		// Tweak Double Trap
-		DoubleTrapMultiplier = cfg.Bind("TweakDoubleTrap", "TrapMultiplier", 1f, "Overall multiplier of the number of traps spawned on Double Trap days.");
+		DoubleTrapMultiplier = cfg.Bind("TweakDoubleTrap", "TrapMultiplier", 2f, "Overall multiplier of the number of traps spawned on Double Trap days.");
 		DoubleTrapRollBaseline = cfg.Bind("TweakDoubleTrap", "RollBaseline", 0.5f, "The minimum roll (between 0 and 1) for trap counts during Double Trap days.\nTrap spawn rates are on a curve, and the game rolls a point between 0 - 1 on the curve each day. If this is set to 0.5, it will be between 0.5 - 1, making every day a relatively high roll.");
-		DoubleTrapBuffLandmineDelay = cfg.BindSyncedEntry("TweakDoubleTrap", "BuffLandmineDelay", 0.5f, "Additional delay in seconds between stepping on a landmine and it exploding on Double Trap days.");
+		DoubleTrapBuffLandmineDelay = cfg.BindSyncedEntry("TweakDoubleTrap", "BuffLandmineDelay", 0.15f, "Additional delay in seconds between stepping on a landmine and it exploding on Double Trap days.");
 		DoubleTrapBuffLandmineNonLethalDamage = cfg.BindSyncedEntry("TweakDoubleTrap", "BuffLandmineNonLethalDamage", 30, "Modified damage the non-lethal (outside) radius of landmine explosions deal on Double Trap days.\nVanilla value is 50 damage.");
 		DoubleTrapEnableTurrets = cfg.Bind("TweakDoubleTrap", "EnableTurrets", true, "Whether turret amounts will be affected on Double Trap days.");
 		DoubleTrapEnableLandmines = cfg.Bind("TweakDoubleTrap", "EnableLandmines", true, "Whether landmine amounts will be affected on Double Trap days.");

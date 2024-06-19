@@ -1,3 +1,6 @@
+## v1.1.2
+- Fix incorrect config defaults for Double Trap
+
 ## v1.1.1
 - Add Double Monster config for when the guaranteed Old Bird wakes up
 - Add landmine modifiers to Double Traps
