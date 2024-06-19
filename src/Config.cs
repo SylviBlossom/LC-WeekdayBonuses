@@ -20,6 +20,7 @@ public class Config : SyncedConfig2<Config>
 
 	// Tweak Double Monster
 	public ConfigEntry<bool> DoubleMonsterAlwaysSpawnOldBird;
+	public ConfigEntry<int> DoubleMonsterOldBirdActivationTime;
 	public ConfigEntry<float> DoubleMonsterPerEnemyCapMultiplier;
 	public ConfigEntry<float> DoubleMonsterIndoorPowerMultiplier;
 	public ConfigEntry<float> DoubleMonsterIndoorRateMultiplier;
@@ -29,6 +30,8 @@ public class Config : SyncedConfig2<Config>
 	// Tweak Double Trap
 	public ConfigEntry<float> DoubleTrapMultiplier;
 	public ConfigEntry<float> DoubleTrapRollBaseline;
+	[SyncedEntryField] public SyncedEntry<float> DoubleTrapBuffLandmineDelay;
+	[SyncedEntryField] public SyncedEntry<int> DoubleTrapBuffLandmineNonLethalDamage;
 	public ConfigEntry<bool> DoubleTrapEnableTurrets;
 	public ConfigEntry<bool> DoubleTrapEnableLandmines;
 	public ConfigEntry<bool> DoubleTrapEnableSpikeTraps;
@@ -80,6 +83,7 @@ public class Config : SyncedConfig2<Config>
 
 		// Tweak Double Monster
 		DoubleMonsterAlwaysSpawnOldBird = cfg.Bind("TweakDoubleMonster", "AlwaysSpawnOldBird", true, "Ensures an Old Bird spawns outside on Double Monster days.");
+		DoubleMonsterOldBirdActivationTime = cfg.Bind("TweakDoubleMonster", "OldBirdActivationTime", 18, "If the Old Bird spawn is enabled, this is the time the guaranteed Old Bird awakens (24 hour time). Default is ~6pm.");
 		DoubleMonsterPerEnemyCapMultiplier = cfg.Bind("TweakDoubleMonster", "PerEnemyCapMultiplier", 2f, "Multiplies the max spawn count for each individual enemy (unless its max is 1) on Double Monster days.");
 		DoubleMonsterIndoorPowerMultiplier = cfg.Bind("TweakDoubleMonster", "IndoorPowerMultiplier", 2f, "Multiplies the max power level indoors on Double Monster days.");
 		DoubleMonsterIndoorRateMultiplier = cfg.Bind("TweakDoubleMonster", "IndoorRateMultiplier", 2f, "Multiplies how many indoor enemies spawn per hour on Double Monster days.");
@@ -93,6 +97,8 @@ public class Config : SyncedConfig2<Config>
 		// Tweak Double Trap
 		DoubleTrapMultiplier = cfg.Bind("TweakDoubleTrap", "TrapMultiplier", 1f, "Overall multiplier of the number of traps spawned on Double Trap days.");
 		DoubleTrapRollBaseline = cfg.Bind("TweakDoubleTrap", "RollBaseline", 0.5f, "The minimum roll (between 0 and 1) for trap counts during Double Trap days.\nTrap spawn rates are on a curve, and the game rolls a point between 0 - 1 on the curve each day. If this is set to 0.5, it will be between 0.5 - 1, making every day a relatively high roll.");
+		DoubleTrapBuffLandmineDelay = cfg.BindSyncedEntry("TweakDoubleTrap", "BuffLandmineDelay", 0.5f, "Additional delay in seconds between stepping on a landmine and it exploding on Double Trap days.");
+		DoubleTrapBuffLandmineNonLethalDamage = cfg.BindSyncedEntry("TweakDoubleTrap", "BuffLandmineNonLethalDamage", 30, "Modified damage the non-lethal (outside) radius of landmine explosions deal on Double Trap days.\nVanilla value is 50 damage.");
 		DoubleTrapEnableTurrets = cfg.Bind("TweakDoubleTrap", "EnableTurrets", true, "Whether turret amounts will be affected on Double Trap days.");
 		DoubleTrapEnableLandmines = cfg.Bind("TweakDoubleTrap", "EnableLandmines", true, "Whether landmine amounts will be affected on Double Trap days.");
 		DoubleTrapEnableSpikeTraps = cfg.Bind("TweakDoubleTrap", "EnableSpikeTraps", true, "Whether spike trap amounts will be affected on Double Trap days.");

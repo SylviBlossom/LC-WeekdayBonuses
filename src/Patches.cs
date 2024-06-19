@@ -28,6 +28,10 @@ public static class Patches
 		IL.Terminal.TextPostProcess += Terminal_TextPostProcess_IL;
 
 		On.Terminal.SetItemSales += Terminal_SetItemSales;
+		On.Landmine.TriggerMineOnLocalClientByExiting += Landmine_TriggerMineOnLocalClientByExiting;
+		IL.Landmine.ExplodeMineClientRpc += Landmine_ExplodeMineClientRpc_IL;
+		On.Landmine.Detonate += Landmine_Detonate;
+		IL.Landmine.Detonate += Landmine_Detonate_IL;
 		On.RoundManager.SpawnScrapInLevel += RoundManager_SpawnScrapInLevel;
 		On.RoundManager.GenerateNewFloor += RoundManager_GenerateNewFloor;
 		IL.RoundManager.SpawnScrapInLevel += RoundManager_SpawnScrapInLevel_IL;
@@ -35,6 +39,94 @@ public static class Patches
 		IL.RoundManager.SpawnEnemiesOutside += RoundManager_SpawnEnemiesOutside_IL;
 		IL.RoundManager.PredictAllOutsideEnemies += RoundManager_PredictAllOutsideEnemies_IL;
 		IL.RoundManager.PlotOutEnemiesForNextHour += RoundManager_PlotOutEnemiesForNextHour_IL;
+	}
+
+	private static void Landmine_Detonate_IL(ILContext il)
+	{
+		var cursor = new ILCursor(il);
+
+		if (!cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcI4(50)))
+		{
+			Plugin.Logger.LogError("Failed IL hook for Landmine.Detonate @ Set non-lethal damage to 50");
+			return;
+		}
+
+		cursor.EmitDelegate<Func<int, int>>(damage =>
+		{
+			if (StartOfRound.Instance.isChallengeFile || !WeekdayUtils.HasEvent(EventType.DoubleTrap))
+			{
+				return damage;
+			}
+
+			var customDamage = Plugin.Config.DoubleTrapBuffLandmineNonLethalDamage.Value;
+
+			return customDamage >= 0 ? customDamage : damage;
+		});
+	}
+
+	private static void Landmine_Detonate(On.Landmine.orig_Detonate orig, Landmine self)
+	{
+		if (StartOfRound.Instance.isChallengeFile || !WeekdayUtils.HasEvent(EventType.DoubleTrap))
+		{
+			orig(self);
+			return;
+		}
+
+		var modLandmine = self.GetComponent<ModLandmine>();
+
+		if (modLandmine == null || !modLandmine.DelayExplosion)
+		{
+			orig(self);
+			return;
+		}
+
+		modLandmine.TryDetonate();
+	}
+
+	private static void Landmine_TriggerMineOnLocalClientByExiting(On.Landmine.orig_TriggerMineOnLocalClientByExiting orig, Landmine self)
+	{
+		if (StartOfRound.Instance.isChallengeFile || !WeekdayUtils.HasEvent(EventType.DoubleTrap))
+		{
+			orig(self);
+			return;
+		}
+
+		DelayLandmineDetonation(self);
+
+		orig(self);
+	}
+
+	private static void Landmine_ExplodeMineClientRpc_IL(ILContext il)
+	{
+		var cursor = new ILCursor(il);
+
+		if (!cursor.TryGotoNext(MoveType.AfterLabel,
+				instr => instr.MatchLdarg(0),
+				instr => instr.MatchCallOrCallvirt<Landmine>("SetOffMineAnimation")))
+		{
+			Plugin.Logger.LogError("Failed IL hook for Landmine.ExplodeMineClientRpc @ SetOffMineAnimation");
+			return;
+		}
+
+		cursor.Emit(OpCodes.Ldarg_0);
+		cursor.EmitDelegate<Action<Landmine>>(self =>
+		{
+			if (StartOfRound.Instance.isChallengeFile || !WeekdayUtils.HasEvent(EventType.DoubleTrap))
+			{
+				return;
+			}
+
+			DelayLandmineDetonation(self);
+		});
+	}
+
+	private static void DelayLandmineDetonation(Landmine landmine)
+	{
+		var modLandmine =
+			landmine.GetComponent<ModLandmine>() ??
+			landmine.gameObject.AddComponent<ModLandmine>();
+
+		modLandmine.DelayExplosion = true;
 	}
 
 	private static void Terminal_SetItemSales(On.Terminal.orig_SetItemSales orig, Terminal self)
@@ -229,7 +321,7 @@ public static class Patches
 			}
 
 			DoubleMonsterSpawnRobot = true;
-			DoubleMonsterRobotSpawnTime = self.timeScript.lengthOfHours * 12; // Should be 6pm?
+			DoubleMonsterRobotSpawnTime = self.timeScript.lengthOfHours * (Plugin.Config.DoubleMonsterOldBirdActivationTime.Value - 6);
 
 			var robotEnemy = WeekdayUtils.GetEnemyType("RadMech");
 
