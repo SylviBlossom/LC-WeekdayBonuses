@@ -1,6 +1,8 @@
 # Weekday Bonuses
 Adds repeating bonus events for certain days of the week to Lethal Company, inspired by [Double-Loot Wednesday](https://thunderstore.io/c/lethal-company/p/SylviBlossom/WednesdayFix/). Events and the days they appear on can be configured.
 
+*This is a fun/joke mod for me and my friends, it's not very quality assured, but we have fun with it!*
+
 ## Bonuses
 
 | Event Name     | Default Day | Event Description |

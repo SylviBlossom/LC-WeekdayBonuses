@@ -1,6 +1,6 @@
 {
     "name": "WeekdayBonuses",
-    "version_number": "1.1.3",
+    "version_number": "1.1.4",
     "website_url": "https://github.com/SylviBlossom/LC-WeekdayBonuses",
     "description": "Adds repeating bonus events for certain days of the week.",
     "dependencies": [

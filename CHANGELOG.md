@@ -1,3 +1,6 @@
+## v1.1.4
+- Fix error when leaving/joining on Black Friday
+
 ## v1.1.3
 - Update for v60
 - Fix cruiser not being discounted on Black Friday

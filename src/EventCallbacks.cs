@@ -94,6 +94,11 @@ public static class EventCallbacks
 
 	public static void BlackFridaySettingChanged()
 	{
+		if (GameNetworkManager.Instance.localPlayerController == null)
+		{
+			return;
+		}
+
 		var terminal = Object.FindObjectOfType<Terminal>();
 
 		if (terminal != null)
