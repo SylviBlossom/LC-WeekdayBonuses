@@ -30,13 +30,13 @@
 
     <ItemGroup>
       <Reference Include="Assembly-CSharp">
-        <HintPath>..\lib-stripped\Managed-v50-strip\Assembly-CSharp.dll</HintPath>
+        <HintPath>..\lib-stripped\Managed-v60-strip\Assembly-CSharp.dll</HintPath>
       </Reference>
       <Reference Include="com.sigurd.csync">
         <HintPath>..\lib-stripped\Mods-strip\com.sigurd.csync.dll</HintPath>
       </Reference>
       <Reference Include="MMHOOK_Assembly-CSharp">
-        <HintPath>..\lib-stripped\MMHOOK-v50-strip\MMHOOK_Assembly-CSharp.dll</HintPath>
+        <HintPath>..\lib-stripped\MMHOOK-v60-strip\MMHOOK_Assembly-CSharp.dll</HintPath>
       </Reference>
       <Reference Include="Unity.Netcode.Runtime">
         <HintPath>..\lib-stripped\UnityEngine-strip\Unity.Netcode.Runtime.dll</HintPath>

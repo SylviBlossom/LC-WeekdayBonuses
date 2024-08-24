@@ -165,7 +165,6 @@ public class Config : SyncedConfig2<Config>
 
 	private void OnBlackFridaySettingChanged<T>(object sender, SyncedSettingChangedEventArgs<T> e)
 	{
-		var terminal = Object.FindObjectOfType<Terminal>();
-		terminal?.SetItemSales();
+		EventCallbacks.BlackFridaySettingChanged();
 	}
 }

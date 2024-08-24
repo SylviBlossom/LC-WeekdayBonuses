@@ -79,6 +79,10 @@ public class Plugin : BaseUnityPlugin
 		{
 			EventCallbacks.DoubleMonsterEnabled();
 		}
+		if (events.Contains(EventType.Black))
+		{
+			EventCallbacks.BlackFridaySettingChanged();
+		}
 	}
 
 	public static void CallEventsDisabled(EventType[] events)
@@ -86,6 +90,10 @@ public class Plugin : BaseUnityPlugin
 		if (events.Contains(EventType.DoubleMonster))
 		{
 			EventCallbacks.DoubleMonsterDisabled();
+		}
+		if (events.Contains(EventType.Black))
+		{
+			EventCallbacks.BlackFridaySettingChanged();
 		}
 	}
 }

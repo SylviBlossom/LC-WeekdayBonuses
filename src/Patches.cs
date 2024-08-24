@@ -16,6 +16,8 @@ namespace WeekdayBonuses;
 
 public static class Patches
 {
+	public static bool ForceTerminalSalesChange;
+
 	private static bool DoubleMonsterSpawnRobot;
 	private static float DoubleMonsterRobotSpawnTime;
 
@@ -27,6 +29,7 @@ public static class Patches
 		On.StartOfRound.Update += StartOfRound_Update;
 		IL.Terminal.TextPostProcess += Terminal_TextPostProcess_IL;
 
+		IL.Terminal.SetItemSales += Terminal_SetItemSales_IL;
 		On.Terminal.SetItemSales += Terminal_SetItemSales;
 		On.Landmine.TriggerMineOnLocalClientByExiting += Landmine_TriggerMineOnLocalClientByExiting;
 		IL.Landmine.ExplodeMineClientRpc += Landmine_ExplodeMineClientRpc_IL;
@@ -39,6 +42,22 @@ public static class Patches
 		IL.RoundManager.SpawnEnemiesOutside += RoundManager_SpawnEnemiesOutside_IL;
 		IL.RoundManager.PredictAllOutsideEnemies += RoundManager_PredictAllOutsideEnemies_IL;
 		IL.RoundManager.PlotOutEnemiesForNextHour += RoundManager_PlotOutEnemiesForNextHour_IL;
+	}
+
+	private static void Terminal_SetItemSales_IL(ILContext il)
+	{
+		var cursor = new ILCursor(il);
+
+		ILLabel gotoLabel = null;
+
+		if (!cursor.TryGotoNext(MoveType.After, instr => instr.MatchBgt(out gotoLabel)))
+		{
+			Plugin.Logger.LogError("Failed IL hook for Terminal.SetItemSales @ Randomly don't change sales");
+			return;
+		}
+
+		cursor.EmitDelegate(() => ForceTerminalSalesChange);
+		cursor.Emit(OpCodes.Brtrue, gotoLabel);
 	}
 
 	private static void Landmine_Detonate_IL(ILContext il)
@@ -140,14 +159,21 @@ public static class Patches
 
 		var random = new Random(StartOfRound.Instance.randomMapSeed + 90);
 
-		for (var i = 0; i < self.buyableItemsList.Length; i++)
+		for (var i = 0; i < self.itemSalesPercentages.Length; i++)
 		{
+			var highestSale = 80;
+
+			if (i < self.buyableItemsList.Length)
+			{
+				highestSale = self.buyableItemsList[i].highestSalePercentage;
+			}
+
 			switch (Plugin.Config.BlackFridaySaleMode.Value)
 			{
 				case SaleMode.Random:
 				{
-					var minValue = Mathf.Clamp(Plugin.Config.BlackFridayRandomSaleMinimum.Value, 0, self.buyableItemsList[i].highestSalePercentage);
-					var maxValue = Mathf.Clamp(self.buyableItemsList[i].highestSalePercentage, 0, 90);
+					var minValue = Mathf.Clamp(Plugin.Config.BlackFridayRandomSaleMinimum.Value, 0, highestSale);
+					var maxValue = Mathf.Clamp(highestSale, 0, 90);
 					var sale = self.RoundToNearestTen(100 - random.Next(minValue, maxValue + 1));
 
 					self.itemSalesPercentages[i] = sale;
@@ -155,7 +181,7 @@ public static class Patches
 				}
 				case SaleMode.Highest:
 				{
-					var maxValue = Mathf.Clamp(self.buyableItemsList[i].highestSalePercentage, 0, 90);
+					var maxValue = Mathf.Clamp(highestSale, 0, 90);
 					var sale = self.RoundToNearestTen(100 - maxValue);
 
 					self.itemSalesPercentages[i] = sale;

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace WeekdayBonuses;
 
@@ -88,6 +89,18 @@ public static class EventCallbacks
 			OriginalEnemyMaxCounts.Remove(enemyType);
 
 			Plugin.Logger.LogInfo($"Max count for {enemyType.enemyName}: {enemyType.MaxCount}");
+		}
+	}
+
+	public static void BlackFridaySettingChanged()
+	{
+		var terminal = Object.FindObjectOfType<Terminal>();
+
+		if (terminal != null)
+		{
+			Patches.ForceTerminalSalesChange = true;
+			terminal?.SetItemSales();
+			Patches.ForceTerminalSalesChange = false;
 		}
 	}
 }
